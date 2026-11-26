@@ -4,7 +4,7 @@
 Kaggle 競賽：`sdc-2026-midterm-ii-visual-slam-track-01`、`sdc-2026-midterm-ii-visual-slam-track-02`。
 評分是軌跡先對真值做 Sim(3) 對齊，再算位置 RMSE，越低越好。public 只涵蓋一小段：Track01 是一個急彎附近的 132 幀，Track02 是一個 L 形路口。
 
-- 簡報：https://claude.ai/artifact/Nv1tBRU3k72aaiz7NkhJmu
+- 簡報：[docs/slides.pdf](docs/slides.pdf)（線上版 https://claude.ai/artifact/Nv1tBRU3k72aaiz7NkhJmu）
 - 全程影片：https://youtu.be/wfRxi4plZ_w（白點是 BA 建出的地圖，彩色點是當下這一幀看到的點）
 
 ## 結果
