@@ -1,0 +1,43 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mid2 Visual SLAM viewer</title>
+<script src="plotly.min.js"></script>
+<style>
+body{margin:0;background:#111;color:#ddd;font:14px system-ui,sans-serif}
+#bar{padding:8px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#s{flex:1;min-width:200px} button{background:#333;color:#ddd;border:1px solid #555;border-radius:4px;padding:4px 10px}
+#wrap{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 6px}
+#wrap>div,#cam{width:100%} #top,#map3d{height:62vh}
+#cam{display:block} h3{margin:10px 12px 4px;font-size:14px;color:#9cf} .pics img{max-width:100%;display:block;margin:6px auto;background:#fff}
+@media(max-width:800px){#wrap{grid-template-columns:1fr}#top,#map3d{height:48vh}}
+</style></head><body>
+<div id="bar"><b>Track01 v1</b><button id="play">▶ 播放</button><input id="s" type="range" min="0" value="0"><span id="lab"></span></div>
+<div id="wrap"><div><img id="cam"><div id="top"></div></div><div id="map3d"></div></div>
+<h3>各版本軌跡比較（三圈應重疊）</h3>
+<div class="pics"><img src="v3.png"><img src="v2.png"><img src="v1.png"></div>
+<script>
+fetch('data.json').then(r=>r.json()).then(d=>{
+ const n=d.traj[0].length, s=document.getElementById('s'); s.max=n-1;
+ const idx=[...Array(n).keys()];
+ const lay={paper_bgcolor:'#111',plot_bgcolor:'#111',font:{color:'#ccc'},margin:{l:30,r:5,t:5,b:25},showlegend:false};
+ const sub=[],subc=[]; for(let i=0;i<d.pts[0].length;i+=3){sub.push(i)}
+ Plotly.newPlot('top',[
+  {x:sub.map(i=>d.pts[0][i]),y:sub.map(i=>d.pts[1][i]),mode:'markers',type:'scattergl',marker:{size:2,color:sub.map(i=>d.rgb[i])},hoverinfo:'skip'},
+  {x:d.traj[0],y:d.traj[1],mode:'markers',type:'scattergl',marker:{size:3,color:idx,colorscale:'Turbo'},text:idx},
+  {x:[0],y:[0],mode:'markers',marker:{size:14,color:'#f33',line:{color:'#fff',width:2}}},
+  {x:[0,0],y:[0,0],mode:'lines',line:{color:'#f33',width:3}}],
+  Object.assign({xaxis:{gridcolor:'#333'},yaxis:{scaleanchor:'x',gridcolor:'#333'},dragmode:'pan'},lay),{scrollZoom:true,responsive:true});
+ Plotly.newPlot('map3d',[
+  {x:d.pts[0],y:d.pts[1],z:d.pts[2],mode:'markers',type:'scatter3d',marker:{size:1.2,color:d.rgb},hoverinfo:'skip'},
+  {x:d.traj[0],y:d.traj[1],z:d.traj[2],mode:'lines',type:'scatter3d',line:{width:5,color:idx,colorscale:'Turbo'}},
+  {x:[0],y:[0],z:[0],mode:'markers',type:'scatter3d',marker:{size:6,color:'#f33'}}],
+  Object.assign({scene:{aspectmode:'data',xaxis:{visible:false},yaxis:{visible:false},zaxis:{visible:false},camera:{eye:{x:0,y:-0.9,z:0.9}}}},lay),{responsive:true});
+ function show(i){i=+i; document.getElementById('cam').src='img/'+String(i).padStart(4,'0')+'.jpg';
+  document.getElementById('lab').textContent='frame '+i+' / '+(n-1);
+  const x=d.traj[0][i],y=d.traj[1][i];
+  Plotly.restyle('top',{x:[[x],[x,x+2.5*d.fwd[0][i]]],y:[[y],[y,y+2.5*d.fwd[1][i]]]},[2,3]);
+  Plotly.restyle('map3d',{x:[[x]],y:[[y]],z:[[d.traj[2][i]]]},[2]);}
+ s.oninput=()=>show(s.value); show(0);
+ let tm=null; document.getElementById('play').onclick=e=>{ if(tm){clearInterval(tm);tm=null;e.target.textContent='▶ 播放';return}
+  e.target.textContent='⏸ 暫停'; tm=setInterval(()=>{s.value=(+s.value+2)%n; show(s.value)},100)};
+});
+</script></body></html>

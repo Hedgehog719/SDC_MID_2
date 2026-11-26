@@ -1,0 +1,18 @@
+# environment and competition data (not redistributed)
+.venv/
+download/
+data/
+image_slam_starter/Track1
+viewer/images
+viewer/img/
+
+# python
+__pycache__/
+*.pyc
+
+# Claude Code session files
+.claude/
+image_slam_starter/Track2
+.venv-loger/
+.claude/settings.local.json
+handoff/
