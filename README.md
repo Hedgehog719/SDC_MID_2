@@ -17,6 +17,7 @@ Kaggle 競賽：`sdc-2026-midterm-ii-visual-slam-track-01`、`sdc-2026-midterm-i
 - Track02 交過的提交中 private 最好的是同一套方法的 `t2_sfmx_homo_ult_frp_dt41`（0.184）。
 - Track01 交過的提交中 private 最好的是 `t1_rs26_dt35`（0.065，可排第 2）。它的 public 0.069 比較差，所以當時沒選。
 - 賽後晚交，時間差改用純物理推算的 −35 ms：Track02 private 0.183、Track01 private 0.066。
+- 賽後實驗（執行中）：Depth Anything V2 的每幀尺度先驗當初讓 public 變差 0.03–0.04 而沒採用，但在前端階段把 Track02 private 從約 2.0 降到約 0.7；正在把它加進最終流程的前端，整條重跑。
 
 ![地圖](figures/fig_map.png)
 
